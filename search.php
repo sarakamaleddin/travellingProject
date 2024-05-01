@@ -3,21 +3,24 @@ require("includes/header.php");
 require "conf/config.php";
 ?>
 <?php
-if (isset($_POST['submit'])) {
-    if (empty([$_POST['country_id']]) or empty([$_POST['price']])) {
-        echo "<script>alert('some inputs are empty')</script>";
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+    if (empty($_POST['country_id']) or empty($_POST['price'])) {
+        echo "<script>alert('some inputs are empty');</script>";
     } else {
+
         $country_id = $_POST['country_id'];
         $price = $_POST['price'];
 
-        $searchs = $conn->prepare("SELECT * FROM cities WHERE country_id = :country_id AND price < :price");
-        $searchs->bindParam(':country_id', $country_id, PDO::PARAM_INT);
-        $searchs->bindParam(':price', $price, PDO::PARAM_INT);
-        $searchs->execute();
-        $allSearchs = $searchs->fetchAll(PDO::FETCH_OBJ);
 
-        //var_dump($allSearchs);
+        $searchs = $conn->query("SELECT * FROM cities WHERE country_id = $country_id 
+        AND price < $price");
+        $searchs->execute();
+
+        $allSearchs = $searchs->fetchAll(PDO::FETCH_OBJ);
     }
+} else {
+    header("location: index.php");
 }
 ?>
 
@@ -42,7 +45,7 @@ if (isset($_POST['submit'])) {
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="image">
-                                    <img src="assets/images/<?php echo $search->image; ?>" alt="">
+                                    <img src="<?php echo CITIESIMAGES ;?>/<?php echo $search->image; ?>" alt="">
                                 </div>
                             </div>
                             <div class="col-lg-6 align-self-center">
@@ -60,9 +63,13 @@ if (isset($_POST['submit'])) {
                                         </div>
                                     </div>
                                     <p>Limited Price: $<?php echo $search->price; ?> per person</p>
-                                    <div class="main-button">
-                                        <a href="reservation.php?id=<?php echo $search->id; ?>">Make a Reservation</a>
-                                    </div>
+                                    <?php if (isset($_SESSION['username'])) : ?>
+                                        <div class="main-button">
+                                            <a href="reservation.php?id=<?php echo $search->id; ?>">Make a Reservation</a>
+                                        </div>
+                                    <?php else : ?>
+                                        <p>Login to make reservation</p>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>

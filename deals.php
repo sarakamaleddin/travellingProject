@@ -39,9 +39,9 @@ $allCountries = $countries->fetchAll(PDO::FETCH_OBJ);
               <fieldset>
                 <select name="country_id" class="form-select" aria-label="Default select example" id="chooseLocation" onChange="this.form.click()">
                   <option selected>Destinations</option>
-                  <?php foreach($allCountries as $country): ?>
-                  <option value="<?php echo $country->id;?>"><?php echo $country->name;?></option>
-                  <?php endforeach;?>
+                  <?php foreach ($allCountries as $country) : ?>
+                    <option value="<?php echo $country->id; ?>"><?php echo $country->name; ?></option>
+                  <?php endforeach; ?>
                 </select>
               </fieldset>
             </div>
@@ -84,7 +84,7 @@ $allCountries = $countries->fetchAll(PDO::FETCH_OBJ);
             <div class="row">
               <div class="col-lg-6">
                 <div class="image">
-                  <img src="assets/images/<?php echo $city->image; ?>" alt="">
+                  <img src="<?php echo CITIESIMAGES ;?>/<?php echo $city->image; ?>" alt="">
                 </div>
               </div>
               <div class="col-lg-6 align-self-center">
@@ -102,9 +102,13 @@ $allCountries = $countries->fetchAll(PDO::FETCH_OBJ);
                     </div>
                   </div>
                   <p>Limited Price: $<?php echo $city->price; ?> per person</p>
-                  <div class="main-button">
-                    <a href="reservation.php?id=<?php echo $city->id; ?>">Make a Reservation</a>
-                  </div>
+                  <?php if (isset($_SESSION['username'])) : ?>
+                    <div class="main-button">
+                      <a href="reservation.php?id=<?php echo $city->id; ?>">Make a Reservation</a>
+                    </div>
+                  <?php else : ?>
+                    <p>Login to make reservation</p>
+                  <?php endif; ?>
                 </div>
               </div>
             </div>

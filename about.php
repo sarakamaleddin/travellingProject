@@ -1,44 +1,54 @@
+<?php require "includes/header.php"; ?>
+<?php require "conf/config.php"; ?>
 <?php
-require("includes/header.php");
-require("conf/config.php");
-?>
-<?php
+
 if (isset($_GET['id'])) {
+
   $id = $_GET['id'];
 
-  $coutry = $conn->query("SELECT * FROM countries WHERE id='$id'");
-  $coutry->execute();
-  $singleCountry = $coutry->fetch(PDO::FETCH_OBJ);
+  $country = $conn->query("SELECT * FROM countries WHERE id='$id'");
+  $country->execute();
 
-  // images for the cities
+  $singleCountry = $country->fetch(PDO::FETCH_OBJ);
+
+  //images for the cities
   $citiesImages = $conn->query("SELECT * FROM cities WHERE country_id='$id'");
   $citiesImages->execute();
+
   $singleImage = $citiesImages->fetchAll(PDO::FETCH_OBJ);
 
-  // cities with booking numbers
 
-  $cities = $conn->query("SELECT cities.id AS id, cities.name AS name, cities.image AS image,
-  cities.trip_days AS trip_days, cities.price AS price, COUNT(bookings.city_id) AS count_bookings 
-  FROM cities LEFT JOIN bookings ON cities.id = bookings.city_id 
-  WHERE cities.country_id = '$id'
-  GROUP BY(bookings.city_id)");
+  //cities with bookings number
+
+  $cities = $conn->query("SELECT cities.id AS id, cities.name 
+    AS name, cities.image AS image, cities.trip_days AS trip_days, cities.price AS price,
+      COUNT(bookings.city_id) AS count_bookings FROM cities LEFT JOIN 
+    bookings ON cities.id = bookings.city_id WHERE cities.country_id = '$id' GROUP BY(bookings.city_id)");
+
   $cities->execute();
+
   $allCities = $cities->fetchAll(PDO::FETCH_OBJ);
 
-  // cities for every country
-  $cities_country = $conn->query("SELECT COUNT(country_id) AS num_cities FROM cities
-  WHERE country_id = '$id'");
+  //cities of every country
+
+  $cities_country = $conn->query("SELECT COUNT(country_id) AS num_city FROM cities 
+    WHERE country_id = '$id'");
   $cities_country->execute();
+
   $num_cities = $cities_country->fetch(PDO::FETCH_OBJ);
 
-  // number of booking for every country
-  $num_country = $conn->query("SELECT COUNT(bookings.city_id) AS count_bookings FROM cities JOIN bookings
-  ON cities.id = bookings.city_id WHERE cities.country_id = '$id'");
+  //number of bookings for every country
+
+  $num_country = $conn->query("SELECT COUNT(bookings.city_id) AS count_bookings 
+    FROM cities JOIN bookings 
+    ON cities.id = bookings.city_id WHERE cities.country_id = '$id'");
   $num_country->execute();
+
   $num_bookings = $num_country->fetch(PDO::FETCH_OBJ);
 } else {
   header("location: 404.php");
 }
+
 ?>
 
 <!-- ***** Main Banner Area Start ***** -->
@@ -51,7 +61,9 @@ if (isset($_GET['id'])) {
           <h4>EXPLORE OUR COUNTRY</h4>
           <div class="line-dec"></div>
           <h2>Welcome To <?php echo $singleCountry->name; ?></h2>
-          <p><?php echo $singleCountry->description; ?></p>
+          <p>
+            <?php echo $singleCountry->description; ?>
+          </p>
           <div class="main-button">
           </div>
         </div>
@@ -74,11 +86,12 @@ if (isset($_GET['id'])) {
               <?php foreach ($singleImage as $image) : ?>
                 <div class="item">
                   <div class="thumb">
-                    <img src="assets/images/<?php echo $image->image; ?>" alt="">
+                    <img src="<?php echo CITIESIMAGES; ?>/<?php echo $image->image; ?>" alt="">
                     <h4><?php echo $image->name; ?></h4>
                   </div>
                 </div>
               <?php endforeach; ?>
+
             </div>
           </div>
         </div>
@@ -105,14 +118,14 @@ if (isset($_GET['id'])) {
           <?php foreach ($allCities as $city) : ?>
             <div class="item">
               <div class="thumb">
-                <img src="assets/images/<?php echo $city->image; ?>" alt="">
+                <img src="<?php echo CITIESIMAGES; ?>/<?php echo $city->image; ?>" alt="">
                 <div class="text">
-                  <h4><?php echo $city->name; ?><br><span><i class="fa fa-users"></i><?php echo $city->count_bookings; ?> Check Ins</span></h4>
-                  <h6><?php echo $city->price; ?> $<br><span>/person</span></h6>
+                  <h4><?php echo $city->name; ?><br><span><i class="fa fa-users"></i> <?php echo $city->count_bookings; ?> Check Ins</span></h4>
+                  <h6>$<?php echo $city->price; ?><br><span>/person</span></h6>
                   <div class="line-dec"></div>
                   <ul>
                     <li>Deal Includes:</li>
-                    <li><i class="fa fa-taxi"></i><?php echo $city->trip_days; ?> Days Trip > Hotel Included</li>
+                    <li><i class="fa fa-taxi"></i> <?php echo $city->trip_days; ?> Days Trip > Hotel Included</li>
                     <li><i class="fa fa-plane"></i> Airplane Bill Included</li>
                     <li><i class="fa fa-building"></i> Daily Places Visit</li>
                   </ul>
@@ -121,7 +134,7 @@ if (isset($_GET['id'])) {
                       <a href="reservation.php?id=<?php echo $city->id; ?>">Make a Reservation</a>
                     </div>
                   <?php else : ?>
-                    <p>Login to make reservation</p>
+                    <p>login to make a reservation</p>
                   <?php endif; ?>
                 </div>
               </div>
@@ -152,11 +165,11 @@ if (isset($_GET['id'])) {
             <div class="info-item">
               <div class="row">
                 <div class="col-lg-6">
-                  <h4><?php echo $num_cities->num_cities; ?> +</h4>
+                  <h4><?php echo $num_cities->num_city; ?></h4>
                   <span>Amazing Places</span>
                 </div>
                 <div class="col-lg-6">
-                  <h4><?php echo $num_bookings->count_bookings; ?>+</h4>
+                  <h4><?php echo $num_bookings->count_bookings; ?></h4>
                   <span>Different Check-ins</span>
                 </div>
               </div>
@@ -169,4 +182,7 @@ if (isset($_GET['id'])) {
     </div>
   </div>
 </div>
-<?php require("includes/footer.php") ?>
+
+
+
+<?php require "includes/footer.php"; ?>

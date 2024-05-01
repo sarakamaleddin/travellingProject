@@ -1,6 +1,11 @@
 <?php
 session_start();
 define("APPURL", "http://localhost:8077/travellingProject");
+
+//images dirs
+define("COUNTRIESIMAGES", "http://localhost:8077/travellingProject/admin-panel/countries-admins/images_countries");
+define("CITIESIMAGES", "http://localhost:8077/travellingProject/admin-panel/cities-admins/images_cities");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -61,27 +66,27 @@ https://templatemo.com/tm-580-woox-travel
             <!-- ***** Logo End ***** -->
             <!-- ***** Menu Start ***** -->
             <ul class="nav">
-              <li><a href="<?php echo APPURL ;?>" class="active">Home</a></li>
-              <li><a href="<?php echo APPURL ;?>/deals.php">Deals</a></li>
+              <li><a href="<?php echo APPURL; ?>" class="active">Home</a></li>
+              <li><a href="<?php echo APPURL; ?>/deals.php">Deals</a></li>
               <?php
-              if(isset($_SESSION['username'])) :
+              if (isset($_SESSION['username'])) :
               ?>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <?php echo $_SESSION['username']; ?>
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item text-black" href="<?php echo APPURL ;?>/users/user.php?id=<?php echo $_SESSION['user_id'] ;?>">Your Bookings</a></li>
-                  <li><a class="dropdown-item text-black" href="#">Another action</a></li>
-                  <li>
-                    <hr class="dropdown-divider">
-                  </li>
-                  <li><a class="dropdown-item text-black" href="<?php echo APPURL; ?>/auth/logout.php">Logout</a></li>
-                </ul>
-              </li>
-              <?php else: ?>
-              <li><a href="<?php echo APPURL; ?>/auth/login.php">Login</a></li>
-              <li><a href="<?php echo APPURL; ?>/auth/register.php">Register</a></li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <?php echo $_SESSION['username']; ?>
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item text-black" href="<?php echo APPURL; ?>/users/user.php?id=<?php echo $_SESSION['user_id']; ?>">Your Bookings</a></li>
+                    <li><a class="dropdown-item text-black" href="#">Another action</a></li>
+                    <li>
+                      <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item text-black" href="<?php echo APPURL; ?>/auth/logout.php">Logout</a></li>
+                  </ul>
+                </li>
+              <?php else : ?>
+                <li><a href="<?php echo APPURL; ?>/auth/login.php">Login</a></li>
+                <li><a href="<?php echo APPURL; ?>/auth/register.php">Register</a></li>
               <?php endif; ?>
             </ul>
             <a class='menu-trigger'>
